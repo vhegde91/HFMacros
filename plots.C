@@ -14,7 +14,7 @@
 #include <TPaveStats.h>
 TF1 *asymgaussfit(TH1F *his, Double_t *fitrange, Double_t *startvalues, Double_t *parlimitslo, Double_t *parlimitshi, Double_t *fitparams, Double_t *fiterrors, Double_t *ChiSqr, Int_t *NDF);
 Int_t asymgausspro(Double_t *params, Double_t &maxx, Double_t &FWHM); 
-TCanvas *c_ho = new TCanvas("cname","cname",1500,850);
+TCanvas *c_ho = new TCanvas("cname","cname",1500,1500);
 void Overlay(int etaask);
 int fitlinecolor=kRed;
 vector<double> peakoffit;
@@ -24,11 +24,11 @@ void plots(int etaask=0){
   
   char fname[50];
   //sprintf(fname, "test_muons_corr.root");
-  sprintf(fname, "254833_E2E1HistsVtx.root");
+  sprintf(fname, "2016B1_E2E1HistsTrg5_Filt.root");
   
   TFile *_file0 = TFile::Open(fname);
   _file0->cd();
-  TDirectory *dqm    = (TDirectory*)_file0->Get("E1E2Cut2Ratio"); dqm->cd();
+  TDirectory *dqm    = (TDirectory*)_file0->Get("E1E2Cut0Ratio"); dqm->cd();
   //TDirectory *dqm    = (TDirectory*)_file0->Get("E1E2Cut3Ietaiphi"); dqm->cd();
   
   char hname[50];
@@ -37,7 +37,7 @@ void plots(int etaask=0){
   int ietaArray[26]={29,30,31,32,-29,-30,-31,-32,33,34,35,36,-33,-34,-35,-36,37,38,39,40,-37,-38,-39,-40,41,-41};
   // TCanvas *c_ho = new TCanvas("ccname","ccname",1900,1900);
   //c_ho->Divide(4,2);
-  TCanvas *c_hoo = new TCanvas("cnamea","cnamea",1500,850);
+  TCanvas *c_hoo = new TCanvas("cnamea","cnamea",1500,1500);
   c_hoo->Divide(2,1);
   int index=0;
   for(int l=abs(etaask);l<(abs(etaask)+8);l++){
@@ -60,7 +60,7 @@ void plots(int etaask=0){
     hist->Rebin(5);
     //        hist->Scale(1.0/hist->Integral());
     TH1F *hist1 = new TH1F(*hist);
-    hist1->SetName("2015C");
+    //    hist1->SetName("2015C");
     
     double mean = hist->GetMean();
     double rms  = hist->GetRMS();
@@ -157,7 +157,7 @@ void plots(int etaask=0){
     
     Double_t chisqr1, SNRPeak1, SNRFWHM;
     Int_t    ndf1;
-    fitlinecolor=kRed;
+    fitlinecolor=kBlue;
     //TF1 *fitHO = langaufit(hist1,fr,sv1,pllo1,plhi1,fp1,fpe1,&chisqr1,&ndf1);
     TF1 *fitHO = asymgaussfit(hist1,fr,sv1,pllo1,plhi1,fp1,fpe1,&chisqr1,&ndf1);
     cout << "langaus"<<endl;
@@ -179,7 +179,7 @@ void plots(int etaask=0){
     gStyle->SetOptFit(101);
     char cname[50], img[50];
     sprintf(cname, "c_%s", hname);
-    hist1->GetXaxis()->SetTitle("R_{S/L}");
+    hist1->GetXaxis()->SetTitle("Ratio");
    
    
    
@@ -197,8 +197,6 @@ void plots(int etaask=0){
     //    hist1->SetMaximum(0.07);
     
     hist1->SetLineColor(fitlinecolor);
-    //hist1->SetLineColor(kBlue);
-    //    hist1->SetLineWidth(2);
     TPaveStats *st=(TPaveStats*)hist1->FindObject("stats");
     st->SetLineColor(fitlinecolor);
     st->SetTextColor(fitlinecolor);

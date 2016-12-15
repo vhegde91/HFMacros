@@ -17,10 +17,10 @@
 #include"TStyle.h"
 using namespace std;
 
-class c_RatiovsIeta{
+class c_RatioRatiovsIeta{
 public:
   void FileNames();
-  void RatiovsIeta1(int);
+  void RatioRatiovsIeta1(int);
   int MCfileIndex=100;
 private:
   char name[100],title[100],legendName[10];
@@ -35,29 +35,24 @@ private:
   void nameLegend(const char*);
 };
 
-void c_RatiovsIeta::FileNames(){
+void c_RatioRatiovsIeta::FileNames(){
   FileList = new TList();
+  //FileList->Add( TFile::Open("2015D_E2E1HistsTrg5.root") );
+  //  FileList->Add( TFile::Open("2016B1_E2E1HistsTrg5_Filt.root") );
+  //  FileList->Add(TFile::Open("2016C_Expr_E2E1HistsTrg5_Filt.root") );
+  //  FileList->Add(TFile::Open("2016D_Expr_E2E1HistsTrg5_Filt.root") );
 
-  //  FileList->Add(TFile::Open("2015D_E2E1HistsTrg5.root") ); //w/o filters
-  FileList->Add(TFile::Open("2015D_E2E1HistsTrg5PupWt2016B.root") );MCfileIndex=0;//w/o filters
-  FileList->Add(TFile::Open("2016B_E2E1HistsTrg5.root") );//w/o filters
-  // FileList->Add( TFile::Open("2016B1_E2E1HistsTrg5_Filt.root") );
-  // FileList->Add(TFile::Open("2016C_Expr_E2E1HistsTrg5_Filt.root") );
-  // FileList->Add(TFile::Open("2016D_Expr_E2E1HistsTrg5_Filt.root") );
-  //  FileList->Add(TFile::Open("2016B_v1_E2E1HistsTrg5.root") );
   //  FileList->Add(TFile::Open("2016B_E2E1HistsTrg5_Final.root") );
-  // FileList->Add(TFile::Open("2016E_E2E1HistsTrg5.root") );
-  // FileList->Add(TFile::Open("2016E_RecHitsBasedOnJets_E2E1HistsTrg5.root") );
-  // FileList->Add(TFile::Open("2016F_E2E1HistsTrg5.root") );
+  // FileList->Add(TFile::Open("2016E_E2E1HistsTrg5.root") );                                                                                                           
+  // FileList->Add(TFile::Open("2016F_E2E1HistsTrg5.root") );                                                                                                           
   // FileList->Add(TFile::Open("2016G_E2E1HistsTrg5.root") );
-  // FileList->Add(TFile::Open("2016H_E2E1HistsTrg5.root") );
-  //  FileList->Add(TFile::Open("2016B1_E2E1HistsJetPt600.root") );
-  //FileList->Add(TFile::Open("MC_Flat_PU_obs_2016B1_E2E1HistsJetPt600.root") );MCfileIndex=1;
-  // FileList->Add(TFile::Open("2016E_E2E1HistsJetPt600_Trg5.root") );
+  // FileList->Add(TFile::Open("2016H_v3_E2E1HistsTrg5.root") );
+  //  FileList->Add(TFile::Open("2016GPUWt2016B_final_E2E1HistsTrg5.root") );MCfileIndex=1;
+
   //  FileList->Add(TFile::Open("MC_Flat_PU_obs_2016E_E2E1HistsJetPt600_18pcScaled.root") );MCfileIndex=1;
-  //  FileList->Add(TFile::Open("MC_Flat_PU_obs_2016E_E2E1HistsJetPt600.root") );MCfileIndex=1;
-  //  FileList->Add(TFile::Open("2016E_E2E1HistsJetPt600_Trg5_PU22toInf.root") );
-  //  FileList->Add(TFile::Open("MC_Flat_PU22toInf_obs_2016E_E2E1HistsJetPt600_18pcScaled.root") );MCfileIndex=1;
+  //FileList->Add(TFile::Open("MC_Flat_PU_obs_2016E_E2E1HistsJetPt600.root") );MCfileIndex=1;
+  //FileList->Add(TFile::Open("2016E_E2E1HistsJetPt600_Trg5_PU18to21.root") );
+  //  FileList->Add(TFile::Open("MC_Flat_PU18to21_obs_2016E_E2E1HistsJetPt600_18pcScaled.root") );MCfileIndex=1;
   //  FileList->Add(TFile::Open("2016B1_E2E1Hists_Jets.root") );
   // FileList->Add( TFile::Open("SingMu2016B2_E2E1HistsTrg1_Filt.root") );  
   // FileList->Add( TFile::Open("SingMu2016B2_E2E1HistsTrg2_Filt.root") );
@@ -70,8 +65,8 @@ void c_RatiovsIeta::FileNames(){
   //  FileList->Add(TFile::Open("2016B_E2E1Hists.root") );
   //  FileList->Add(TFile::Open("2016C_Expr_E2E1HistsTrg5_Filt.root") );
   //  FileList->Add( TFile::Open("2016B1_E2E1HistsTrg5_Filt.root") );
-  
-  //FileList->Add(TFile::Open("2015D_E2E1HistsTrg5PupWt2016B.root") );MCfileIndex=1;
+  FileList->Add(TFile::Open("2016B_E2E1HistsTrg5.root") );  
+  FileList->Add(TFile::Open("2015D_E2E1HistsTrg5PupWt2016B.root") );MCfileIndex=1;
   //  FileList->Add(TFile::Open("2015D_E2E1HistsTrg5PupWt2016B_Filt.root") );MCfileIndex=1;
   //  FileList->Add( TFile::Open("MC25ns_E2E1HistsTrg5PupWt2016B.root") );MCfileIndex=1;
   //FileList->Add( TFile::Open("MC25ns_E2E1HistsTrg5_2016B.root") );MCfileIndex=1;
@@ -85,13 +80,13 @@ void c_RatiovsIeta::FileNames(){
   //!!!!!!!!!! Add more colors if there are more than 5 files! *****************************
 }
 
-void RatiovsIeta(int cutnum){
-  c_RatiovsIeta c1;
+void RatioRatiovsIeta(int cutnum){
+  c_RatioRatiovsIeta c1;
   c1.FileNames();
-  c1.RatiovsIeta1(cutnum);
+  c1.RatioRatiovsIeta1(cutnum);
 }
 
-void c_RatiovsIeta::RatiovsIeta1(int cutnum){
+void c_RatioRatiovsIeta::RatioRatiovsIeta1(int cutnum){
   sprintf(name,"MeanRatiovsIetaECut%i",cutnum);
   sprintf(title,"Mean Ratio vs Ieta ECut%i",cutnum);
   TH1D *h_mRatiovsIeta[nfiles];
@@ -103,7 +98,16 @@ void c_RatiovsIeta::RatiovsIeta1(int cutnum){
   }
   gStyle->SetOptStat(0);
   TCanvas *c_cA=new TCanvas("c_mRatiovsIetaCompareRuns","c_mRatiovsIetaCompareRuns",1500,850);
-  h_mRatiovsIeta[0]->SetMaximum(0.8);
+  TPad *p_top=new TPad("p_top","p_top",0,0.2,1,1);
+  TPad *p_bot=new TPad("p_bot","p_bot",0,0,1,0.2);
+  p_top->SetBottomMargin(0.05);
+  p_top->Draw();
+  p_bot->SetTopMargin(0);
+  p_bot->Draw();
+  p_top->cd();
+  //  c_cA->Divide(1,2);
+
+  h_mRatiovsIeta[0]->SetMaximum(1.0);
   h_mRatiovsIeta[0]->SetMinimum(0.2);
   for(int i=0;i<nfiles;i++){
     h_mRatiovsIeta[i]->SetFillColor(col[i]);
@@ -143,9 +147,10 @@ void c_RatiovsIeta::RatiovsIeta1(int cutnum){
   h_mRatiovsIeta[0]->GetYaxis()->SetTitleOffset(0.65);
   h_mRatiovsIeta[0]->GetYaxis()->SetTitleSize(0.05);
   h_mRatiovsIeta[0]->GetXaxis()->SetTitle("i\\eta");
-  h_mRatiovsIeta[0]->GetXaxis()->SetTitleOffset(0.65);
+  h_mRatiovsIeta[0]->GetXaxis()->SetTitleOffset(0.27);
   h_mRatiovsIeta[0]->GetXaxis()->SetTitleSize(0.05);
   h_mRatiovsIeta[0]->SetTitle(0);
+  TH1D *h_RatiomRatiovsIeta = (TH1D*)h_mRatiovsIeta[0]->Clone();
   nameLegend(f1->GetName());
   legend[0]->AddEntry(h_mRatiovsIeta[0],legendName,"lep");
   legend[0]->Draw();
@@ -170,31 +175,46 @@ void c_RatiovsIeta::RatiovsIeta1(int cutnum){
     legend[i]->AddEntry(h_mRatiovsIeta[i],legendName,"lep");
     legend[i]->Draw();
     f2=(TFile*)FileList->After(f2);
+    h_RatiomRatiovsIeta->Divide(h_mRatiovsIeta[i]);
     i++;
+    if(i>=2) break;
   }//while
   
- 
-  c_cA->SetGridx();
-  c_cA->SetGridy();
-  //  TLatex Tl; Tl.SetTextFont(6); Tl.SetTextSize(35);
-  TPaveText *pt = new TPaveText(21,0.25,28,0.3);
+  p_top->SetGridx();
+  p_top->SetGridy();
+  p_bot->SetGridx();
+  p_bot->SetGridy();
+  c_cA->cd();
+  p_bot->cd();
+
+  h_RatiomRatiovsIeta->SetLineColor(kBlack);
+  h_RatiomRatiovsIeta->SetMarkerColor(kBlack);
+  h_RatiomRatiovsIeta->SetTitle(";;Data/MC");
+  h_RatiomRatiovsIeta->GetYaxis()->SetTitleOffset(0.21);
+  h_RatiomRatiovsIeta->GetYaxis()->SetTitleSize(0.12);
+  h_RatiomRatiovsIeta->GetXaxis()->SetLabelSize(0);
+  h_RatiomRatiovsIeta->GetYaxis()->SetLabelSize(0.13);
+  h_RatiomRatiovsIeta->GetYaxis()->SetNdivisions(505);
+  h_RatiomRatiovsIeta->SetMaximum(1.2);
+  h_RatiomRatiovsIeta->SetMinimum(0.8);
+  h_RatiomRatiovsIeta->Draw();
+
+  TLatex Tl; Tl.SetTextFont(6); Tl.SetTextSize(35);
   sprintf(name,"EL>%s, ES>%s",ELcut.c_str(),EScut.c_str());
-  //  Tl.DrawText(21, 0.25, name);
-  //c_cA->Draw();
-  pt->AddText(name);pt->SetShadowColor(0);pt->SetFillColor(0);pt->Draw();
-  sprintf(name,"RatiovsIeta_%i.png",cutnum);
+  c_cA->cd();p_top->cd();
+  Tl.DrawText(21, 0.25, name);
+  sprintf(name,"RatioRatiovsIeta_%i.png",cutnum);
   c_cA->SaveAs(name);
  
- 
-}//c_RatiovsIeta::RatiovsIeta1
+}//c_RatioRatiovsIeta::RatioRatiovsIeta1
   
 
-int c_RatiovsIeta::getieta(int j){
+int c_RatioRatiovsIeta::getieta(int j){
   int ieta[26]={-41,-40,-39,-38,-37,-36,-35,-34,-33,-32,-31,-30,-29,29,30,31,32,33,34,35,36,37,38,39,40,41};
   return ieta[j];
 }
 
-void c_RatiovsIeta::setTruncMean(TH1D* h_hf,int i){
+void c_RatioRatiovsIeta::setTruncMean(TH1D* h_hf,int i){
   int nbins=h_hf->GetNbinsX();
   //  double intgrl=0,totEntries=h_hf->GetEntries();
   double intgrl=0,totEntries;
@@ -219,9 +239,9 @@ void c_RatiovsIeta::setTruncMean(TH1D* h_hf,int i){
   delete h_hf2;
 }
 
-void c_RatiovsIeta::nameLegend(const char* temp){
+void c_RatioRatiovsIeta::nameLegend(const char* temp){
   string name2;
-  for(int i=0;i<5;i++){
+  for(int i=0;i<6;i++){
     name2[i]=*(temp+i);
   }
   sprintf(legendName,"%s",name2.c_str());  

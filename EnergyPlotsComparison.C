@@ -18,30 +18,39 @@
 
 int nietaHF=26;
 const int nfiles=2;
-char name[100],title[100];
-int col[nfiles]={kRed,kBlue};
+char name[100],title[100],legendName[10];
+int col[nfiles]={kBlue,kRed};
 bool LongNotShort=true;                 //for long
-//bool LongNotShort=false;                  // for short(1 of 3)
+//bool LongNotShort=false;                  // for short
 TCanvas *c_ieta[4];
+bool normalize1=1;
 
 int getPadIdx(int);
 int getCanvasIdx(int);
 void setCanvasName(int,const char*);
 int getieta(int);
+void nameLegend2(const char*);
 
 void EnergyPlotsComparison(int cutnum){
   char iDirName[100];
   TFile *f[nfiles];
   TDirectory *dir[nfiles];
   
-  float MCScale=1;
   gStyle->SetOptStat("nemi");
-  sprintf(iDirName,"E1E2Cut%iIeta",cutnum);
+  sprintf(iDirName,"E1E2Cut%iEnergy",cutnum);
 
-  f[0]=new TFile("MC_E2E1HistsTrg1.root");
-  //f[0]=new TFile("MC_E2E1HistsTrg1_7files.root");
-  f[1]=new TFile("254833_E2E1HistsTrg1.root");
-  // f[1]=new TFile("254833_E2E1HistsTrg1_1DE.root");
+  //f[0]=new TFile("MC25nsPupWt_E2E1HistsTrg5.root");
+
+  //f[0]=new TFile("2015D_E2E1HistsTrg5.root");
+  //  f[0]=new TFile("2016B_E2E1HistsTrg5.root");
+  //  f[1]=new TFile("2015D_E2E1HistsTrg5PupWt2016B.root");
+  //f[1]=new TFile("MC25ns_E2E1HistsTrg5PupWt2016B.root");
+  // f[0]=new TFile("2015D_E2E1HistsTrg5nVtxMin16.root");
+  // f[1]=new TFile("2016B_E2E1HistsTrg5nVtxMin16.root");
+  //  f[0]=new TFile("2016B1_E2E1Hists_Jets.root");
+  f[0]=new TFile("2016B1_E2E1HistsJetPt600.root");
+  //  f[1]=new TFile("MC_PupWt_Flat_E2E1HistsJetPt600.root");MCfileIndex=1;
+  f[1]=new TFile("MC_Flat_PU_obs_2016B1_E2E1HistsJetPt600.root");MCfileIndex=1;
 
   for(int i=0;i<nfiles;i++){
     dir[i]=(TDirectory*)f[i]->FindObjectAny(iDirName);
@@ -57,33 +66,29 @@ void EnergyPlotsComparison(int cutnum){
  
   for(int j=0;j<nietaHF;j++){
     int ieta=getieta(j);
-    if(ieta<0){sprintf(name,"E2E1_ietaN%i",abs(ieta));}
-    else{sprintf(name,"E2E1_ietaP%i",ieta);}
    
+    if(LongNotShort && ieta<0){sprintf(name,"EL_ietaN%i",abs(ieta));}
+    else if( (!LongNotShort) && (ieta<0) ){sprintf(name,"ES_ietaN%i",abs(ieta));}
+    else if( (!LongNotShort) && (ieta>0) ){sprintf(name,"ES_ietaP%i",abs(ieta));}
+    else if( ( LongNotShort) && (ieta>0) ){sprintf(name,"EL_ietaP%i",abs(ieta));}
+
     char name2[50];
     for(int i=0;i<nfiles;i++){
-      TH2D *h_2dhist=(TH2D*)dir[i]->FindObjectAny(name);
-         
-      TH1 *h_projection=h_2dhist->ProjectionX();           //for long
-      //      TH1 *h_projection=h_2dhist->ProjectionY();             //for short(2 of 3)
-      
-     
-      TH1D *h_new = (TH1D*)h_projection->Clone("hnew");    
+      TH1D *h_new = (TH1D*)dir[i]->FindObjectAny(name);    
+
       c_ieta[(getCanvasIdx(j))]->cd((getPadIdx(j)));
-     
       h_new->Rebin(10);
-      h_new->Scale(1.0/(h_new->Integral()));
-      h_new->SetMaximum(1);
-      h_new->SetMinimum(0.001);
+      // h_new->Scale(1.0/(h_new->Integral()));
+     
       gPad->SetLogy();
       h_new->SetLineColor(col[i]);
       h_new->SetLineWidth(2);
 	
       if(i==0){
 	c_ieta[(getCanvasIdx(j))]->cd((getPadIdx(j)));
-	//	h_new->Scale(MCScale);
 	//	h_new->DrawCopy();
-	h_new->Draw();
+	if(normalize1) h_new->Scale(1/h_new->Integral());
+	h_new->Draw("HIST");
 	if(LongNotShort){h_new->GetXaxis()->SetTitle("Energy in Long(GeV)");}
 	else{h_new->GetXaxis()->SetTitle("Energy in Short(GeV)");}
 	
@@ -97,7 +102,8 @@ void EnergyPlotsComparison(int cutnum){
 	st->SetY1NDC(0.90);
 	st->SetY2NDC(0.70);
 	TLegend *legend1=new TLegend(0.65,0.85,.98,.9);
-	legend1->AddEntry(h_new,f[i]->GetName(),"l");
+	nameLegend2(f[i]->GetName());
+	legend1->AddEntry(h_new,legendName,"l");
 	legend1->SetTextSize(0.05);
 	legend1->SetTextColor(col[i]);
 	legend1->Draw();
@@ -105,7 +111,8 @@ void EnergyPlotsComparison(int cutnum){
       }
       else{
 	c_ieta[(getCanvasIdx(j))]->cd((getPadIdx(j)));
-	h_new->Draw("sames");
+	if(normalize1) h_new->Scale(1/h_new->Integral());
+	h_new->Draw("sames hist");
 	c_ieta[(getCanvasIdx(j))]->Update();
 	TPaveStats *st=(TPaveStats*)h_new->FindObject("stats");
 	st->SetLineColor(col[i]);
@@ -115,31 +122,34 @@ void EnergyPlotsComparison(int cutnum){
 	st->SetY1NDC(0.90-i*0.2);
 	st->SetY2NDC(0.70-i*0.2);
 	TLegend *legend2=new TLegend(0.65,0.90-i*0.2,0.98,0.85-i*0.2);
-	legend2->AddEntry(h_new,f[i]->GetName(),"l");
+	nameLegend2(f[i]->GetName());
+	legend2->AddEntry(h_new,legendName,"l");
 	legend2->SetTextSize(0.05);
 	legend2->SetTextColor(col[i]);
 	legend2->Draw();
       }
+      if(!normalize1){
+	h_new->SetMaximum(10000000);
+	h_new->SetMinimum(0.1);
+      }
       //-------------------for summary plot(INclusive in ieta)-------------------------
       if(j==nietaHF-1){
 	char name3[10];
-	sprintf(name3,"E2vsE1Cut%i",cutnum);
-	TH2D *h_2dhist2=(TH2D*)dir[i]->FindObjectAny(name3);
-	TH1 *h_projection2=h_2dhist2->ProjectionX();             //for long
-	//TH1 *h_projection2=h_2dhist2->ProjectionY();               //for short(3 of 3)
-	TH1F *h_new2 = (TH1F*)h_projection2->Clone("hnew2");    
+
+
+	if(LongNotShort){sprintf(name3,"ELCut%i",cutnum);}
+	else{sprintf(name3,"ESCut%i",cutnum);}
+	TH1D *h_new2 = (TH1D*)dir[i]->FindObjectAny(name3);
 	c_ieta[3]->cd(3);
 	h_new2->Rebin(10);
-	h_new2->Scale(1.0/(h_new2->Integral()));
-	h_new2->SetMaximum(1);
-	h_new2->SetMinimum(0.001);
-
+	//	h_new2->Scale(1.0/(h_new2->Integral()));
+	
 	gPad->SetLogy();
 	h_new2->SetLineColor(col[i]);
 	h_new2->SetLineWidth(2);
 	if(i==0){
-	  h_new2->Draw();
-	  //	  h_new2->Scale(MCScale);
+	  if(normalize1) h_new2->Scale(1/h_new2->Integral());
+	  h_new2->Draw("HIST");
 	  if(LongNotShort){h_new2->GetXaxis()->SetTitle("Energy in Long(GeV)");}
 	  else{h_new2->GetXaxis()->SetTitle("Energy in Short(GeV)");}
 	  c_ieta[(getCanvasIdx(j))]->Update();
@@ -152,13 +162,15 @@ void EnergyPlotsComparison(int cutnum){
 	  st->SetY1NDC(0.90);
 	  st->SetY2NDC(0.70);
 	  TLegend *legend1=new TLegend(0.65,0.85,.98,.9);
-	  legend1->AddEntry(h_new2,f[i]->GetName(),"l");
+	  nameLegend2(f[i]->GetName());
+	  legend1->AddEntry(h_new2,legendName,"l");
 	  legend1->SetTextSize(0.05);
 	  legend1->SetTextColor(col[i]);
 	  legend1->Draw();
 	}
 	else{
-	  h_new2->Draw("sames");
+	  if(normalize1) h_new2->Scale(1/h_new2->Integral());
+	  h_new2->Draw("sames hist");
 	  c_ieta[(getCanvasIdx(j))]->Update();
 	  TPaveStats *st=(TPaveStats*)h_new2->FindObject("stats");
 	  st->SetLineColor(col[i]);
@@ -168,10 +180,15 @@ void EnergyPlotsComparison(int cutnum){
 	  st->SetY1NDC(0.90-i*0.2);
 	  st->SetY2NDC(0.70-i*0.2);
 	  TLegend *legend2=new TLegend(0.65,0.90-i*0.2,0.98,0.85-i*0.2);
-	  legend2->AddEntry(h_new2,f[i]->GetName(),"l");
+	  nameLegend2(f[i]->GetName());
+	  legend2->AddEntry(h_new2,legendName,"l");
 	  legend2->SetTextSize(0.05);
 	  legend2->SetTextColor(col[i]);
 	  legend2->Draw();
+	}
+	if(!normalize1){
+	  h_new2->SetMaximum(100000000);
+	  h_new2->SetMinimum(0.1);
 	}
       }//if(j==nietaHF-1)
     }//nfiles loop    
@@ -237,5 +254,12 @@ int getieta(int j){
 
 }
 
-
+void nameLegend2(const char* temp){
+  string name2;
+  for(int i=0;i<6;i++){
+    name2[i]=*(temp+i);
+  }
+  sprintf(legendName,"%s",name2.c_str());  
+  
+}
 

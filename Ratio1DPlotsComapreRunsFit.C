@@ -18,30 +18,24 @@
 #include"TLegend.h"
 
 int nietaHF=26;
-const int nfiles=2;    //Specify no. of files
+const int nfiles=1;    //Specify no. of files
 TFile *f[nfiles];
-int col[5]={kRed,kBlue,kTeal+9,kMagenta,kBlack};
-
+int col[5]={kBlue,kRed,kTeal+9,kMagenta,kBlack};
+double peakVal[26],trunkMean[26];
 char name[100],title[100];
 
 int getieta(int);
 int getPadIdx(int);
 int getCanvasIdx(int);
 void setCanvasName(int,const char*);
-void Ratio1DPlotsComapreRuns(int cutnum){
-  char iDirName[50]; 
-  sprintf(iDirName,"E1E2Cut%iRatio",cutnum);
-
+void Ratio1DPlotsComapreRunsFit(const char* iDirName){
   TDirectory *dir[nfiles];
   TCanvas *c_ieta[4];
   //================Files to be Compared=========================
   //  f[0]=TFile::Open("MC25ns_E2E1HistsTrg5PupWt2016B.root");
   // f[1]=TFile::Open("2016B_E2E1HistsTrg5.root");
   // f[0]=TFile::Open("2015D_E2E1HistsTrg5PupWt2016B.root");
-  //  f[0]=TFile::Open("2016B1_E2E1HistsTrg5_Filt.root");
-  //  f[0]=TFile::Open("MC_Flat_E2E1HistsJetPt600.root");
-  f[0]=TFile::Open("MC_Flat_PU_obs_2016B1_E2E1HistsJetPt600.root");
-  f[1]=TFile::Open("2016B1_E2E1HistsJetPt600.root");
+  f[0]=TFile::Open("2016B1_E2E1HistsTrg5_Filt.root");
   //  f[1]=TFile::Open("2016B3_E2E1HistsTrg5_Filt.root");
   //f[2]=TFile::Open("2016B1_E2E1HistsTrg5_Filt.root");
   //  f[1]=TFile::Open("2016C_Expr_E2E1HistsTrg5_Filt.root");
@@ -56,7 +50,7 @@ void Ratio1DPlotsComapreRuns(int cutnum){
    c_ieta[i]=new TCanvas(name,title,1500,1500);
    c_ieta[i]->Divide(4,2);
  }
- 
+ gStyle->SetOptFit(1111);
  for(int j=0;j<nietaHF;j++){
    int ieta=getieta(j);
    if(ieta<0){sprintf(name,"RatioE2vsE1_ietaN%i",abs(ieta));}
@@ -65,17 +59,20 @@ void Ratio1DPlotsComapreRuns(int cutnum){
    for(int i=0;i<nfiles;i++){
      TH1D *h_hf=(TH1D*)dir[i]->FindObjectAny(name);
      c_ieta[(getCanvasIdx(j))]->cd((getPadIdx(j)));
-     
+     TF1 *fit1=new TF1("fit1","gaus",0.3,0.7);
      h_hf->Rebin(10);
-     h_hf->Scale(1.0/(h_hf->Integral()));
+     h_hf->Fit("fit1","R");
+     peakVal[j]=fit1->GetParameter("Mean");
+     trunkMean[j]=h_hf->GetMean();
+     //h_hf->Scale(1.0/(h_hf->Integral()));
      //     h_hf->SetMaximum(0.14);
      h_hf->SetMinimum(0);
      h_hf->SetLineColor(col[i]);
-     h_hf->SetLineWidth(2);
+     h_hf->SetLineWidth(1);
      h_hf->SetLineStyle(i+1);
      if(i==0){
        h_hf->GetXaxis()->SetTitle("Ratio");
-       h_hf->Draw("HIST");
+       //h_hf->Draw("hist");
        //       h_hf->SetFillColor(col[i]-4);
        c_ieta[(getCanvasIdx(j))]->Update();
        TPaveStats *st=(TPaveStats*)h_hf->FindObject("stats");
@@ -92,7 +89,7 @@ void Ratio1DPlotsComapreRuns(int cutnum){
        legend1->Draw();
      }
      else{
-       h_hf->Draw("sames HIST");
+       h_hf->Draw("sames ");
        //h_hf->SetLineStyle(2);
        h_hf->SetLineWidth(2);
        c_ieta[(getCanvasIdx(j))]->Update();
@@ -113,7 +110,11 @@ void Ratio1DPlotsComapreRuns(int cutnum){
      
    }
  }
- 
+
+ cout<<"Mean: {"; 
+ for(int j=0;j<nietaHF;j++)   cout<<trunkMean[j]<<",";
+ cout<<endl<<"Peak: {";
+ for(int j=0;j<nietaHF;j++)   cout<<peakVal[j]<<",";
    
 }
 
